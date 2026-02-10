@@ -865,8 +865,8 @@ async function init() {
   try {
     // Load both JSON files
     const [skeletonResponse, phraseResponse] = await Promise.all([
-      fetch('data/complete-essay-phrase-bank.json'),
-      fetch('data/complete-essay-phrase-bank1.json')
+      fetch('complete-essay-phrase-bank.json'),
+      fetch('complete-essay-phrase-bank1.json')
     ]);
     
     if (!skeletonResponse.ok || !phraseResponse.ok) {
@@ -890,8 +890,8 @@ async function init() {
         <div style="font-size: 1rem; margin-top: 1rem; opacity: 0.6;">${error.message}</div>
         <div style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.4;">
           Looking for:<br>
-          data/complete-essay-phrase-bank.json<br>
-          data/complete-essay-phrase-bank1.json
+          complete-essay-phrase-bank.json<br>
+          complete-essay-phrase-bank1.json
         </div>
       </div>
     `;
@@ -900,8 +900,6 @@ async function init() {
 
 // ==================== RENDER PRIMARY TABS ====================
 function renderPrimaryTabs() {
-  if (!skeletonData) return;
-  
   const container = document.getElementById('primaryTabs');
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
   
@@ -928,8 +926,6 @@ function switchType(type) {
 
 // ==================== RENDER CONTENT ====================
 function renderContent() {
-  if (!skeletonData || !phraseData) return;
-  
   const container = document.getElementById('slidesContainer');
   container.innerHTML = '';
   
@@ -1030,15 +1026,12 @@ function renderSkeleton(variation) {
 
 // ==================== RENDER PHRASES ====================
 function renderPhrases(essayType) {
-  // Convert essay type key format
-  const phraseKey = essayType.replace(/-/g, '_');
-  
   // Check if we have phrase data for this type
-  if (!phraseData[phraseKey] || !phraseData[phraseKey].categories) {
+  if (!phraseData[essayType] || !phraseData[essayType].categories) {
     return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available for this essay type.</div>';
   }
   
-  const categories = phraseData[phraseKey].categories;
+  const categories = phraseData[essayType].categories;
   
   let html = '<div class="phrases-display">';
   
