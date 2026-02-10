@@ -865,8 +865,8 @@ async function init() {
   try {
     // Load both JSON files
     const [skeletonResponse, phraseResponse] = await Promise.all([
-      fetch('complete-essay-phrase-bank.json'),
-      fetch('complete-essay-phrase-bank1.json')
+      fetch('data/complete-essay-phrase-bank.json'),
+      fetch('data/complete-essay-phrase-bank1.json')
     ]);
     
     if (!skeletonResponse.ok || !phraseResponse.ok) {
@@ -890,8 +890,8 @@ async function init() {
         <div style="font-size: 1rem; margin-top: 1rem; opacity: 0.6;">${error.message}</div>
         <div style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.4;">
           Looking for:<br>
-          complete-essay-phrase-bank.json<br>
-          complete-essay-phrase-bank1.json
+          data/complete-essay-phrase-bank.json<br>
+          data/complete-essay-phrase-bank1.json
         </div>
       </div>
     `;
