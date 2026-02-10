@@ -166,13 +166,13 @@
       background: #ffffff;
       border: 4px solid #000000;
       border-radius: 24px;
-      padding: 2.5rem 2.5rem;
+      padding: 4rem 3rem;
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       display: none;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 2rem;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -205,14 +205,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1rem;
+      padding-bottom: 1.5rem;
       border-bottom: 2px solid rgba(0, 0, 0, 0.08);
       flex-shrink: 0;
     }
 
     .essay-type-title {
       font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: rgba(0, 0, 0, 0.4);
       text-transform: uppercase;
@@ -256,8 +256,8 @@
     /* SKELETON DISPLAY */
     .skeleton-display {
       font-family: 'Inter', sans-serif;
-      font-size: 1.1rem;
-      line-height: 1.3;
+      font-size: 1.75rem;
+      line-height: 1.4;
       color: #000000;
       text-align: left;
       font-weight: 900;
@@ -268,7 +268,7 @@
     }
 
     .skeleton-display .paragraph-block {
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
       animation: fadeSlideIn 0.5s ease-out;
     }
 
@@ -288,15 +288,16 @@
     }
 
     .skeleton-display .paragraph-title {
-      font-size: 0.65rem;
+      font-size: 1rem;
       color: rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.75rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.5rem;
     }
 
+    /* Color-coded paragraph titles */
     .skeleton-display .paragraph-block:nth-child(1) .paragraph-title {
       color: #2ecc71;
     }
@@ -312,14 +313,20 @@
     }
 
     .skeleton-display .paragraph-text {
-      font-size: 1.1rem;
+      font-size: 1.75rem;
       color: #000000;
-      line-height: 1.3;
-      margin-bottom: 0.4rem;
+      line-height: 1.4;
+      margin-bottom: 0.875rem;
     }
 
     .skeleton-display .paragraph-text:last-child {
       margin-bottom: 0;
+    }
+
+    .skeleton-display .divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+      margin: 1.5rem 0;
     }
 
     /* PHRASES DISPLAY */
@@ -459,7 +466,9 @@
       display: none;
     }
 
+    /* ============================================ */
     /* MOBILE OPTIMIZATIONS */
+    /* ============================================ */
     @media (max-width: 768px) {
       html, body {
         width: 100vw;
@@ -469,10 +478,12 @@
         position: fixed;
       }
 
+      /* Hide desktop nav */
       .navigation-bar {
         display: none;
       }
 
+      /* Back button - compact */
       .back-btn {
         top: 0.75rem;
         left: 0.75rem;
@@ -482,6 +493,7 @@
         gap: 0.3rem;
       }
 
+      /* Full screen container */
       .slides-container {
         position: fixed;
         top: 0;
@@ -499,6 +511,7 @@
         overflow: hidden;
       }
 
+      /* Slide - 10% breathing space */
       .slide {
         position: fixed;
         top: 5vh;
@@ -521,6 +534,7 @@
         display: flex !important;
       }
 
+      /* Mobile header - three-column layout */
       .slide-header {
         display: flex !important;
         flex-direction: row;
@@ -535,6 +549,7 @@
         position: relative;
       }
 
+      /* Categories menu section - left */
       .category-menu-section {
         display: flex;
         align-items: center;
@@ -550,6 +565,7 @@
         letter-spacing: 0.05em;
       }
 
+      /* iOS-style menu button */
       .category-menu-btn {
         width: 36px;
         height: 36px;
@@ -578,10 +594,12 @@
         border-radius: 50%;
       }
 
+      /* Center spacer */
       .header-spacer {
         flex: 1;
       }
 
+      /* Dropdown menu */
       .category-dropdown {
         position: absolute;
         top: calc(100% + 0.5rem);
@@ -645,6 +663,7 @@
         line-height: 1.2;
       }
 
+      /* Mode toggle - right side */
       .slide-mode-toggle {
         display: flex !important;
         flex-shrink: 0;
@@ -677,38 +696,45 @@
         color: #D4AF37;
       }
 
+      /* Card header - hide on mobile (replaced by slide-header) */
       .card-header {
         display: none !important;
       }
 
+      /* Content area - scrollable */
       .skeleton-display,
       .phrases-display {
         flex: 1;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
 
+      /* Skeleton - 30% font reduction */
       .skeleton-display {
-        font-size: 0.8rem;
-        line-height: 1.25;
+        font-size: 1.225rem;
+        line-height: 1.3;
       }
 
       .skeleton-display .paragraph-title {
-        font-size: 0.5rem;
-        margin-bottom: 0.3rem;
-        gap: 0.25rem;
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
       }
 
       .skeleton-display .paragraph-text {
-        font-size: 0.8rem;
-        margin-bottom: 0.3rem;
+        font-size: 1.225rem;
+        margin-bottom: 0.6rem;
       }
 
       .skeleton-display .paragraph-block {
-        margin-bottom: 0.75rem;
+        margin-bottom: 1.25rem;
       }
 
+      .skeleton-display .divider {
+        margin: 1rem 0;
+      }
+
+      /* Phrases display mobile */
       .phrase-category {
         margin-bottom: 1.5rem;
       }
@@ -733,6 +759,7 @@
         padding-left: 1rem;
       }
 
+      /* Navigation */
       .nav-arrows {
         bottom: 1rem;
         gap: 0.6rem;
@@ -757,19 +784,20 @@
       }
     }
 
+    /* Extra small phones */
     @media (max-width: 375px) {
       .skeleton-display {
-        font-size: 0.7rem;
-        padding: 1rem;
-        line-height: 1.2;
+        font-size: 1.05rem;
+        padding: 1.25rem;
+        line-height: 1.25;
       }
 
       .skeleton-display .paragraph-text {
-        font-size: 0.7rem;
+        font-size: 1.05rem;
       }
 
       .skeleton-display .paragraph-title {
-        font-size: 0.45rem;
+        font-size: 0.65rem;
       }
 
       .phrase-item {
@@ -785,6 +813,7 @@
       }
     }
 
+    /* Desktop - hide mobile elements */
     @media (min-width: 769px) {
       .mobile-mode-toggle,
       .slide-header {
@@ -800,6 +829,7 @@
   <span>Back</span>
 </button>
 
+<!-- DESKTOP NAVIGATION -->
 <nav class="navigation-bar">
   <div class="primary-tabs" id="primaryTabs"></div>
   
@@ -811,8 +841,10 @@
   </div>
 </nav>
 
+<!-- SLIDES CONTAINER -->
 <div class="slides-container" id="slidesContainer"></div>
 
+<!-- NAVIGATION -->
 <div class="nav-arrows">
   <button class="nav-arrow" onclick="navigate(-1)">←</button>
   <button class="nav-arrow" onclick="navigate(1)">→</button>
@@ -821,69 +853,54 @@
 <div class="progress-dots" id="progressDots"></div>
 
 <script>
+// ==================== STATE ====================
 let skeletonData = null;
 let phraseData = null;
 let currentType = 'for-against';
 let currentVariation = 0;
 let viewMode = 'skeleton';
 
+// ==================== INIT ====================
 async function init() {
   try {
-    console.log('🚀 Starting...');
+    // Load both JSON files
+    const [skeletonResponse, phraseResponse] = await Promise.all([
+      fetch('data/complete-essay-phrase-bank.json'),
+      fetch('data/complete-essay-phrase-bank1.json')
+    ]);
     
-    const skeletonResponse = await fetch('data/complete-essay-phrase-bank1.json');
-    
-    if (!skeletonResponse.ok) {
-      throw new Error(`HTTP ${skeletonResponse.status}`);
+    if (!skeletonResponse.ok || !phraseResponse.ok) {
+      throw new Error('Failed to load data files');
     }
     
-    const skeletonText = await skeletonResponse.text();
-    console.log('📄 Skeleton raw text sample:', skeletonText.substring(0, 200));
-    
-    skeletonData = JSON.parse(skeletonText);
-    console.log('✅ Skeleton loaded');
-    console.log('📊 Keys:', Object.keys(skeletonData));
-    console.log('📊 for-against:', skeletonData['for-against']);
-    
-    const phraseResponse = await fetch('data/complete-essay-phrase-bank.json');
-    
-    if (!phraseResponse.ok) {
-      throw new Error(`HTTP ${phraseResponse.status}`);
-    }
-    
+    skeletonData = await skeletonResponse.json();
     phraseData = await phraseResponse.json();
-    console.log('✅ Phrases loaded');
     
     renderPrimaryTabs();
     renderContent();
     renderDots();
     updateNav();
     
-    console.log('✅ Ready');
-    
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error loading data:', error);
     document.getElementById('slidesContainer').innerHTML = `
-      <div style="text-align: center; padding: 2rem; color: #D4AF37; max-width: 600px;">
+      <div style="text-align: center; padding: 2rem; color: #D4AF37;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Failed to load</div>
-        <div style="font-size: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
-          <strong>Error:</strong> ${error.message}
-        </div>
-        <div style="font-size: 0.875rem; opacity: 0.6;">
-          Make sure data/ folder contains:<br>
-          • complete-essay-phrase-bank1.json<br>
-          • complete-essay-phrase-bank.json
+        <div style="font-size: 1.5rem; font-weight: 700;">Failed to load essay data</div>
+        <div style="font-size: 1rem; margin-top: 1rem; opacity: 0.6;">${error.message}</div>
+        <div style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.4;">
+          Looking for:<br>
+          data/complete-essay-phrase-bank.json<br>
+          data/complete-essay-phrase-bank1.json
         </div>
       </div>
     `;
   }
 }
 
+// ==================== RENDER PRIMARY TABS ====================
 function renderPrimaryTabs() {
   const container = document.getElementById('primaryTabs');
-  if (!skeletonData) return;
-  
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
   
   container.innerHTML = types.map(typeKey => {
@@ -897,6 +914,7 @@ function renderPrimaryTabs() {
   }).join('');
 }
 
+// ==================== SWITCH TYPE ====================
 function switchType(type) {
   currentType = type;
   currentVariation = 0;
@@ -906,32 +924,18 @@ function switchType(type) {
   updateNav();
 }
 
+// ==================== RENDER CONTENT ====================
 function renderContent() {
   const container = document.getElementById('slidesContainer');
   container.innerHTML = '';
   
-  if (!skeletonData || !skeletonData[currentType]) {
-    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Data not loaded</div>';
-    return;
-  }
-  
-  const typeData = skeletonData[currentType];
-  
-  if (!typeData.skeletons || !Array.isArray(typeData.skeletons) || typeData.skeletons.length === 0) {
-    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">No skeletons found</div>';
-    console.error('Skeletons issue:', typeData);
-    return;
-  }
-  
-  if (!typeData.skeletons[currentVariation]) {
-    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Variation not found</div>';
-    return;
-  }
-  
-  const variation = typeData.skeletons[currentVariation];
   const slide = document.createElement('div');
   slide.className = 'slide active';
   
+  const typeData = skeletonData[currentType];
+  const variation = typeData.skeletons[currentVariation];
+  
+  // Build header with toggle
   const headerHTML = `
     <div class="card-header">
       <div class="essay-type-title">${typeData.label}${viewMode === 'skeleton' ? ` — ${variation.name}` : ''}</div>
@@ -946,6 +950,7 @@ function renderContent() {
     </div>
   `;
   
+  // Build mobile header
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
   const dropdownHTML = types.map(typeKey => {
     const td = skeletonData[typeKey];
@@ -992,59 +997,59 @@ function renderContent() {
   container.appendChild(slide);
 }
 
+// ==================== RENDER SKELETON ====================
 function renderSkeleton(variation) {
-  if (!variation || !variation.skeleton) {
-    return '<div style="padding: 2rem; color: red;">Invalid skeleton data</div>';
-  }
-  
   let html = '<div class="skeleton-display">';
   
-  variation.skeleton.forEach((para) => {
+  variation.skeleton.forEach((para, index) => {
     html += '<div class="paragraph-block">';
-    html += `<div class="paragraph-title">${para.emoji || '📝'} ${para.title || 'Untitled'}</div>`;
+    html += `<div class="paragraph-title">${para.emoji} ${para.title}</div>`;
     
-    if (para.lines && Array.isArray(para.lines)) {
-      para.lines.forEach(line => {
-        if (line !== "") {
-          html += `<div class="paragraph-text">${line}</div>`;
-        }
-      });
+    para.lines.forEach(line => {
+      if (line === "") {
+        html += '<div class="paragraph-text">&nbsp;</div>';
+      } else {
+        html += `<div class="paragraph-text">${line}</div>`;
+      }
+    });
+    
+    if (index < variation.skeleton.length - 1) {
+      html += '</div><div class="divider"></div>';
+    } else {
+      html += '</div>';
     }
-    
-    html += '</div>';
   });
   
   html += '</div>';
   return html;
 }
 
+// ==================== RENDER PHRASES ====================
 function renderPhrases(essayType) {
-  if (!phraseData || !phraseData[essayType] || !phraseData[essayType].categories) {
-    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available</div>';
+  // Check if we have phrase data for this type
+  if (!phraseData[essayType] || !phraseData[essayType].categories) {
+    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available for this essay type.</div>';
   }
   
   const categories = phraseData[essayType].categories;
+  
   let html = '<div class="phrases-display">';
   
   categories.forEach(category => {
     html += '<div class="phrase-category">';
-    html += `<div class="category-title">${category.title || 'Untitled'}</div>`;
+    html += `<div class="category-title">${category.title}</div>`;
     
-    if (category.subcategories) {
-      category.subcategories.forEach(sub => {
-        html += '<div class="subcategory">';
-        html += `<div class="subcategory-title">${sub.subtitle || ''}</div>`;
-        html += '<ul class="phrase-list">';
-        
-        if (sub.phrases) {
-          sub.phrases.forEach(phrase => {
-            html += `<li class="phrase-item">${phrase}</li>`;
-          });
-        }
-        
-        html += '</ul></div>';
+    category.subcategories.forEach(sub => {
+      html += '<div class="subcategory">';
+      html += `<div class="subcategory-title">${sub.subtitle}</div>`;
+      html += '<ul class="phrase-list">';
+      
+      sub.phrases.forEach(phrase => {
+        html += `<li class="phrase-item">${phrase}</li>`;
       });
-    }
+      
+      html += '</ul></div>';
+    });
     
     html += '</div>';
   });
@@ -1053,33 +1058,37 @@ function renderPhrases(essayType) {
   return html;
 }
 
+// ==================== SET VIEW MODE ====================
 function setViewMode(mode) {
   viewMode = mode;
+  
+  // Update desktop mode buttons
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === mode);
   });
+  
   renderContent();
   renderDots();
   updateNav();
 }
 
+// ==================== RENDER DOTS ====================
 function renderDots() {
   const container = document.getElementById('progressDots');
   container.innerHTML = '';
   
-  if (viewMode === 'skeleton' && skeletonData && skeletonData[currentType]) {
+  if (viewMode === 'skeleton') {
     const typeData = skeletonData[currentType];
-    if (typeData.skeletons && Array.isArray(typeData.skeletons)) {
-      typeData.skeletons.forEach((skeleton, index) => {
-        const dot = document.createElement('div');
-        dot.className = `progress-dot ${index === currentVariation ? 'active' : ''}`;
-        dot.onclick = () => switchVariation(index);
-        container.appendChild(dot);
-      });
-    }
+    typeData.skeletons.forEach((skeleton, index) => {
+      const dot = document.createElement('div');
+      dot.className = `progress-dot ${index === currentVariation ? 'active' : ''}`;
+      dot.onclick = () => switchVariation(index);
+      container.appendChild(dot);
+    });
   }
 }
 
+// ==================== SWITCH VARIATION ====================
 function switchVariation(index) {
   currentVariation = index;
   renderContent();
@@ -1087,14 +1096,15 @@ function switchVariation(index) {
   updateNav();
 }
 
+// ==================== NAVIGATE ====================
 function navigate(direction) {
   if (viewMode === 'skeleton') {
-    if (!skeletonData || !skeletonData[currentType]) return;
     const typeData = skeletonData[currentType];
     currentVariation += direction;
     currentVariation = Math.max(0, Math.min(currentVariation, typeData.skeletons.length - 1));
     renderDots();
   } else {
+    // In phrases mode, navigate between essay types
     const types = Object.keys(skeletonData).filter(key => key !== 'meta');
     const currentIndex = types.indexOf(currentType);
     const newIndex = currentIndex + direction;
@@ -1103,18 +1113,14 @@ function navigate(direction) {
       return;
     }
   }
+  
   renderContent();
   updateNav();
 }
 
+// ==================== UPDATE NAV ====================
 function updateNav() {
   const arrows = document.querySelectorAll('.nav-arrow');
-  
-  if (!skeletonData || !skeletonData[currentType]) {
-    arrows[0].disabled = true;
-    arrows[1].disabled = true;
-    return;
-  }
   
   if (viewMode === 'skeleton') {
     const typeData = skeletonData[currentType];
@@ -1128,36 +1134,59 @@ function updateNav() {
   }
 }
 
+// ==================== CATEGORY DROPDOWN ====================
 function toggleCategoryDropdown(event) {
-  if (event) event.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
+  
   const dropdown = document.getElementById('categoryDropdown');
-  if (dropdown) dropdown.classList.toggle('show');
+  if (dropdown) {
+    dropdown.classList.toggle('show');
+  }
 }
 
 function selectCategoryFromDropdown(categoryId, event) {
-  if (event) event.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  // Close dropdown
   const dropdown = document.getElementById('categoryDropdown');
-  if (dropdown) dropdown.classList.remove('show');
+  if (dropdown) {
+    dropdown.classList.remove('show');
+  }
+  
+  // Switch type
   switchType(categoryId);
 }
 
+// Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.category-menu-btn') && !e.target.closest('.category-dropdown')) {
     const dropdown = document.getElementById('categoryDropdown');
-    if (dropdown) dropdown.classList.remove('show');
+    if (dropdown) {
+      dropdown.classList.remove('show');
+    }
   }
 });
 
+// ==================== KEYBOARD NAV ====================
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') navigate(-1);
   if (e.key === 'ArrowRight') navigate(1);
 });
 
+// Prevent pull-to-refresh
 document.body.addEventListener('touchmove', function(e) {
-  if (e.target === document.body) e.preventDefault();
+  if (e.target === document.body) {
+    e.preventDefault();
+  }
 }, { passive: false });
 
+// ==================== INIT ====================
 init();
 </script>
+
 </body>
 </html>
