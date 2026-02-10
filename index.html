@@ -855,66 +855,51 @@ let viewMode = 'skeleton';
 async function init() {
   try {
     console.log('🚀 Starting init...');
-    console.log('📍 Current URL:', window.location.href);
     
-    // Try loading skeleton data
-    console.log('📥 Fetching skeleton data...');
+    // Load skeleton data
     const skeletonResponse = await fetch('data/complete-essay-phrase-bank1.json');
-    console.log('📊 Skeleton response:', skeletonResponse.status, skeletonResponse.statusText);
     
     if (!skeletonResponse.ok) {
-      throw new Error(`Skeleton fetch failed: ${skeletonResponse.status} - ${skeletonResponse.statusText}`);
+      throw new Error(`Skeleton fetch failed: ${skeletonResponse.status}`);
     }
     
-    const skeletonText = await skeletonResponse.text();
-    console.log('📄 Skeleton data length:', skeletonText.length);
-    console.log('📄 First 100 chars:', skeletonText.substring(0, 100));
+    skeletonData = await skeletonResponse.json();
+    console.log('✅ Skeleton data loaded');
+    console.log('📊 Skeleton data structure:', skeletonData);
+    console.log('📊 for-against exists?', !!skeletonData['for-against']);
+    console.log('📊 for-against data:', skeletonData['for-against']);
+    console.log('📊 for-against skeletons?', skeletonData['for-against']?.skeletons);
+    console.log('📊 for-against skeletons length?', skeletonData['for-against']?.skeletons?.length);
     
-    skeletonData = JSON.parse(skeletonText);
-    console.log('✅ Skeleton data parsed successfully');
-    console.log('📁 Skeleton keys:', Object.keys(skeletonData));
-    
-    // Try loading phrase data
-    console.log('📥 Fetching phrase data...');
+    // Load phrase data
     const phraseResponse = await fetch('data/complete-essay-phrase-bank.json');
-    console.log('📊 Phrase response:', phraseResponse.status, phraseResponse.statusText);
     
     if (!phraseResponse.ok) {
-      throw new Error(`Phrase fetch failed: ${phraseResponse.status} - ${phraseResponse.statusText}`);
+      throw new Error(`Phrase fetch failed: ${phraseResponse.status}`);
     }
     
-    const phraseText = await phraseResponse.text();
-    console.log('📄 Phrase data length:', phraseText.length);
-    
-    phraseData = JSON.parse(phraseText);
-    console.log('✅ Phrase data parsed successfully');
-    console.log('📁 Phrase keys:', Object.keys(phraseData));
+    phraseData = await phraseResponse.json();
+    console.log('✅ Phrase data loaded');
     
     // Render
-    console.log('🎨 Rendering content...');
     renderPrimaryTabs();
     renderContent();
     renderDots();
     updateNav();
     
-    console.log('✅ Initialization complete!');
+    console.log('✅ Init complete');
     
   } catch (error) {
-    console.error('❌ ERROR:', error);
-    console.error('📍 Error name:', error.name);
-    console.error('📍 Error message:', error.message);
-    console.error('📍 Error stack:', error.stack);
-    
+    console.error('❌ Init error:', error);
     document.getElementById('slidesContainer').innerHTML = `
-      <div style="text-align: center; padding: 2rem; color: #D4AF37; max-width: 600px; margin: 0 auto;">
+      <div style="text-align: center; padding: 2rem; color: #D4AF37;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Failed to load essay data</div>
-        <div style="font-size: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; word-break: break-word;">
-          <strong>Error:</strong><br>
+        <div style="font-size: 1.5rem; font-weight: 700;">Failed to load</div>
+        <div style="font-size: 1rem; margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
           ${error.message}
         </div>
         <div style="font-size: 0.875rem; margin-top: 1rem; opacity: 0.6;">
-          <strong>Check your browser console (F12) for detailed logs</strong>
+          Check browser console (F12) for details
         </div>
       </div>
     `;
@@ -926,11 +911,12 @@ function renderPrimaryTabs() {
   const container = document.getElementById('primaryTabs');
   
   if (!skeletonData) {
-    console.error('Cannot render tabs: skeletonData is null');
+    console.error('❌ Cannot render tabs: skeletonData is null');
     return;
   }
   
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
+  console.log('📋 Available types:', types);
   
   container.innerHTML = types.map(typeKey => {
     const typeData = skeletonData[typeKey];
@@ -945,6 +931,7 @@ function renderPrimaryTabs() {
 
 // ==================== SWITCH TYPE ====================
 function switchType(type) {
+  console.log('🔄 Switching to type:', type);
   currentType = type;
   currentVariation = 0;
   renderPrimaryTabs();
@@ -955,33 +942,59 @@ function switchType(type) {
 
 // ==================== RENDER CONTENT ====================
 function renderContent() {
+  console.log('🎨 renderContent called');
+  console.log('   currentType:', currentType);
+  console.log('   currentVariation:', currentVariation);
+  console.log('   viewMode:', viewMode);
+  
   const container = document.getElementById('slidesContainer');
   container.innerHTML = '';
   
-  // Safety checks
   if (!skeletonData) {
+    console.error('❌ skeletonData is null');
     container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeleton data not loaded</div>';
-    console.error('renderContent called but skeletonData is null');
     return;
   }
   
+  console.log('✅ skeletonData exists');
+  console.log('📊 skeletonData keys:', Object.keys(skeletonData));
+  
   if (!skeletonData[currentType]) {
-    console.error('Current type not found:', currentType);
-    console.log('Available types:', Object.keys(skeletonData));
+    console.error('❌ Current type not found:', currentType);
+    console.log('   Available types:', Object.keys(skeletonData).filter(k => k !== 'meta'));
     container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Essay type "${currentType}" not found</div>`;
     return;
   }
   
   const typeData = skeletonData[currentType];
+  console.log('✅ typeData found:', typeData);
+  console.log('📊 typeData.skeletons:', typeData.skeletons);
+  console.log('📊 typeData.skeletons type:', typeof typeData.skeletons);
+  console.log('📊 typeData.skeletons is array?:', Array.isArray(typeData.skeletons));
   
-  if (!typeData.skeletons || !typeData.skeletons[currentVariation]) {
-    console.error('Skeleton variation not found:', currentVariation);
-    console.log('Available variations:', typeData.skeletons?.length || 0);
-    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeleton variation not found</div>`;
+  if (!typeData.skeletons) {
+    console.error('❌ typeData.skeletons is null/undefined');
+    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">No skeletons array found</div>`;
+    return;
+  }
+  
+  console.log('📊 typeData.skeletons.length:', typeData.skeletons.length);
+  
+  if (!Array.isArray(typeData.skeletons) || typeData.skeletons.length === 0) {
+    console.error('❌ Skeletons array is empty or not an array');
+    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeletons array is empty</div>`;
+    return;
+  }
+  
+  if (!typeData.skeletons[currentVariation]) {
+    console.error('❌ Variation not found at index:', currentVariation);
+    console.log('   Available variations:', typeData.skeletons.length);
+    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Variation ${currentVariation} not found (have ${typeData.skeletons.length} variations)</div>`;
     return;
   }
   
   const variation = typeData.skeletons[currentVariation];
+  console.log('✅ Variation found:', variation);
   
   const slide = document.createElement('div');
   slide.className = 'slide active';
@@ -1040,24 +1053,34 @@ function renderContent() {
   
   try {
     if (viewMode === 'skeleton') {
+      console.log('🖼️ Rendering skeleton...');
       contentHTML = renderSkeleton(variation);
     } else {
+      console.log('🖼️ Rendering phrases...');
       contentHTML = renderPhrases(currentType);
     }
   } catch (error) {
-    console.error('Error rendering content:', error);
+    console.error('❌ Error rendering content:', error);
     contentHTML = `<div style="color: red; padding: 2rem;">Error: ${error.message}</div>`;
   }
   
   slide.innerHTML = mobileHeaderHTML + headerHTML + contentHTML;
   container.appendChild(slide);
+  console.log('✅ Content rendered successfully');
 }
 
-// ==================== RENDER SKELETON (COMPACT) ====================
+// ==================== RENDER SKELETON ====================
 function renderSkeleton(variation) {
-  if (!variation || !variation.skeleton) {
-    console.error('Invalid variation passed to renderSkeleton:', variation);
-    return '<div style="padding: 2rem; color: red;">Invalid skeleton data</div>';
+  console.log('🖼️ renderSkeleton called with:', variation);
+  
+  if (!variation) {
+    console.error('❌ variation is null/undefined');
+    return '<div style="padding: 2rem; color: red;">No variation provided</div>';
+  }
+  
+  if (!variation.skeleton) {
+    console.error('❌ variation.skeleton is null/undefined');
+    return '<div style="padding: 2rem; color: red;">No skeleton property in variation</div>';
   }
   
   let html = '<div class="skeleton-display">';
@@ -1083,21 +1106,8 @@ function renderSkeleton(variation) {
 
 // ==================== RENDER PHRASES ====================
 function renderPhrases(essayType) {
-  // Check if we have phrase data for this type
-  if (!phraseData) {
-    console.error('phraseData is null');
-    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">Phrase data not loaded.</div>';
-  }
-  
-  if (!phraseData[essayType]) {
-    console.log('No phrase data for:', essayType);
-    console.log('Available phrase types:', Object.keys(phraseData).filter(k => k !== 'meta'));
+  if (!phraseData || !phraseData[essayType] || !phraseData[essayType].categories) {
     return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available for this essay type.</div>';
-  }
-  
-  if (!phraseData[essayType].categories) {
-    console.error('No categories found for:', essayType);
-    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No categories found for this essay type.</div>';
   }
   
   const categories = phraseData[essayType].categories;
@@ -1106,15 +1116,15 @@ function renderPhrases(essayType) {
   
   categories.forEach(category => {
     html += '<div class="phrase-category">';
-    html += `<div class="category-title">${category.title || 'Untitled Category'}</div>`;
+    html += `<div class="category-title">${category.title || 'Untitled'}</div>`;
     
-    if (category.subcategories && Array.isArray(category.subcategories)) {
+    if (category.subcategories) {
       category.subcategories.forEach(sub => {
         html += '<div class="subcategory">';
-        html += `<div class="subcategory-title">${sub.subtitle || 'Untitled Subcategory'}</div>`;
+        html += `<div class="subcategory-title">${sub.subtitle || ''}</div>`;
         html += '<ul class="phrase-list">';
         
-        if (sub.phrases && Array.isArray(sub.phrases)) {
+        if (sub.phrases) {
           sub.phrases.forEach(phrase => {
             html += `<li class="phrase-item">${phrase}</li>`;
           });
@@ -1134,12 +1144,9 @@ function renderPhrases(essayType) {
 // ==================== SET VIEW MODE ====================
 function setViewMode(mode) {
   viewMode = mode;
-  
-  // Update desktop mode buttons
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mode === mode);
   });
-  
   renderContent();
   renderDots();
   updateNav();
@@ -1175,13 +1182,11 @@ function switchVariation(index) {
 function navigate(direction) {
   if (viewMode === 'skeleton') {
     if (!skeletonData || !skeletonData[currentType]) return;
-    
     const typeData = skeletonData[currentType];
     currentVariation += direction;
     currentVariation = Math.max(0, Math.min(currentVariation, typeData.skeletons.length - 1));
     renderDots();
   } else {
-    // In phrases mode, navigate between essay types
     const types = Object.keys(skeletonData).filter(key => key !== 'meta');
     const currentIndex = types.indexOf(currentType);
     const newIndex = currentIndex + direction;
@@ -1190,7 +1195,6 @@ function navigate(direction) {
       return;
     }
   }
-  
   renderContent();
   updateNav();
 }
@@ -1219,38 +1223,22 @@ function updateNav() {
 
 // ==================== CATEGORY DROPDOWN ====================
 function toggleCategoryDropdown(event) {
-  if (event) {
-    event.stopPropagation();
-  }
-  
+  if (event) event.stopPropagation();
   const dropdown = document.getElementById('categoryDropdown');
-  if (dropdown) {
-    dropdown.classList.toggle('show');
-  }
+  if (dropdown) dropdown.classList.toggle('show');
 }
 
 function selectCategoryFromDropdown(categoryId, event) {
-  if (event) {
-    event.stopPropagation();
-  }
-  
-  // Close dropdown
+  if (event) event.stopPropagation();
   const dropdown = document.getElementById('categoryDropdown');
-  if (dropdown) {
-    dropdown.classList.remove('show');
-  }
-  
-  // Switch type
+  if (dropdown) dropdown.classList.remove('show');
   switchType(categoryId);
 }
 
-// Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.category-menu-btn') && !e.target.closest('.category-dropdown')) {
     const dropdown = document.getElementById('categoryDropdown');
-    if (dropdown) {
-      dropdown.classList.remove('show');
-    }
+    if (dropdown) dropdown.classList.remove('show');
   }
 });
 
@@ -1260,14 +1248,11 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') navigate(1);
 });
 
-// Prevent pull-to-refresh
 document.body.addEventListener('touchmove', function(e) {
-  if (e.target === document.body) {
-    e.preventDefault();
-  }
+  if (e.target === document.body) e.preventDefault();
 }, { passive: false });
 
-// ==================== INIT ====================
+// ==================== START ====================
 init();
 </script>
 </body>
