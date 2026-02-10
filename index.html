@@ -253,7 +253,7 @@
       color: #D4AF37;
     }
 
-    /* SKELETON DISPLAY - COMPACT VERSION */
+    /* SKELETON DISPLAY */
     .skeleton-display {
       font-family: 'Inter', sans-serif;
       font-size: 1.1rem;
@@ -297,7 +297,6 @@
       gap: 0.35rem;
     }
 
-    /* Color-coded paragraph titles */
     .skeleton-display .paragraph-block:nth-child(1) .paragraph-title {
       color: #2ecc71;
     }
@@ -460,9 +459,7 @@
       display: none;
     }
 
-    /* ============================================ */
     /* MOBILE OPTIMIZATIONS */
-    /* ============================================ */
     @media (max-width: 768px) {
       html, body {
         width: 100vw;
@@ -472,12 +469,10 @@
         position: fixed;
       }
 
-      /* Hide desktop nav */
       .navigation-bar {
         display: none;
       }
 
-      /* Back button - compact */
       .back-btn {
         top: 0.75rem;
         left: 0.75rem;
@@ -487,7 +482,6 @@
         gap: 0.3rem;
       }
 
-      /* Full screen container */
       .slides-container {
         position: fixed;
         top: 0;
@@ -505,7 +499,6 @@
         overflow: hidden;
       }
 
-      /* Slide - 10% breathing space */
       .slide {
         position: fixed;
         top: 5vh;
@@ -528,7 +521,6 @@
         display: flex !important;
       }
 
-      /* Mobile header - three-column layout */
       .slide-header {
         display: flex !important;
         flex-direction: row;
@@ -543,7 +535,6 @@
         position: relative;
       }
 
-      /* Categories menu section - left */
       .category-menu-section {
         display: flex;
         align-items: center;
@@ -559,7 +550,6 @@
         letter-spacing: 0.05em;
       }
 
-      /* iOS-style menu button */
       .category-menu-btn {
         width: 36px;
         height: 36px;
@@ -588,12 +578,10 @@
         border-radius: 50%;
       }
 
-      /* Center spacer */
       .header-spacer {
         flex: 1;
       }
 
-      /* Dropdown menu */
       .category-dropdown {
         position: absolute;
         top: calc(100% + 0.5rem);
@@ -657,7 +645,6 @@
         line-height: 1.2;
       }
 
-      /* Mode toggle - right side */
       .slide-mode-toggle {
         display: flex !important;
         flex-shrink: 0;
@@ -690,12 +677,10 @@
         color: #D4AF37;
       }
 
-      /* Card header - hide on mobile (replaced by slide-header) */
       .card-header {
         display: none !important;
       }
 
-      /* Content area - scrollable */
       .skeleton-display,
       .phrases-display {
         flex: 1;
@@ -704,7 +689,6 @@
         padding: 1.25rem;
       }
 
-      /* Skeleton - compact mobile */
       .skeleton-display {
         font-size: 0.8rem;
         line-height: 1.25;
@@ -725,7 +709,6 @@
         margin-bottom: 0.75rem;
       }
 
-      /* Phrases display mobile */
       .phrase-category {
         margin-bottom: 1.5rem;
       }
@@ -750,7 +733,6 @@
         padding-left: 1rem;
       }
 
-      /* Navigation */
       .nav-arrows {
         bottom: 1rem;
         gap: 0.6rem;
@@ -775,7 +757,6 @@
       }
     }
 
-    /* Extra small phones */
     @media (max-width: 375px) {
       .skeleton-display {
         font-size: 0.7rem;
@@ -804,7 +785,6 @@
       }
     }
 
-    /* Desktop - hide mobile elements */
     @media (min-width: 769px) {
       .mobile-mode-toggle,
       .slide-header {
@@ -820,7 +800,6 @@
   <span>Back</span>
 </button>
 
-<!-- DESKTOP NAVIGATION -->
 <nav class="navigation-bar">
   <div class="primary-tabs" id="primaryTabs"></div>
   
@@ -832,10 +811,8 @@
   </div>
 </nav>
 
-<!-- SLIDES CONTAINER -->
 <div class="slides-container" id="slidesContainer"></div>
 
-<!-- NAVIGATION -->
 <div class="nav-arrows">
   <button class="nav-arrow" onclick="navigate(-1)">←</button>
   <button class="nav-arrow" onclick="navigate(1)">→</button>
@@ -844,79 +821,70 @@
 <div class="progress-dots" id="progressDots"></div>
 
 <script>
-// ==================== STATE ====================
 let skeletonData = null;
 let phraseData = null;
 let currentType = 'for-against';
 let currentVariation = 0;
 let viewMode = 'skeleton';
 
-// ==================== INIT ====================
 async function init() {
   try {
-    console.log('🚀 Starting init...');
+    console.log('🚀 Starting...');
     
-    // Load skeleton data
     const skeletonResponse = await fetch('data/complete-essay-phrase-bank1.json');
     
     if (!skeletonResponse.ok) {
-      throw new Error(`Skeleton fetch failed: ${skeletonResponse.status}`);
+      throw new Error(`HTTP ${skeletonResponse.status}`);
     }
     
-    skeletonData = await skeletonResponse.json();
-    console.log('✅ Skeleton data loaded');
-    console.log('📊 Skeleton data structure:', skeletonData);
-    console.log('📊 for-against exists?', !!skeletonData['for-against']);
-    console.log('📊 for-against data:', skeletonData['for-against']);
-    console.log('📊 for-against skeletons?', skeletonData['for-against']?.skeletons);
-    console.log('📊 for-against skeletons length?', skeletonData['for-against']?.skeletons?.length);
+    const skeletonText = await skeletonResponse.text();
+    console.log('📄 Skeleton raw text sample:', skeletonText.substring(0, 200));
     
-    // Load phrase data
+    skeletonData = JSON.parse(skeletonText);
+    console.log('✅ Skeleton loaded');
+    console.log('📊 Keys:', Object.keys(skeletonData));
+    console.log('📊 for-against:', skeletonData['for-against']);
+    
     const phraseResponse = await fetch('data/complete-essay-phrase-bank.json');
     
     if (!phraseResponse.ok) {
-      throw new Error(`Phrase fetch failed: ${phraseResponse.status}`);
+      throw new Error(`HTTP ${phraseResponse.status}`);
     }
     
     phraseData = await phraseResponse.json();
-    console.log('✅ Phrase data loaded');
+    console.log('✅ Phrases loaded');
     
-    // Render
     renderPrimaryTabs();
     renderContent();
     renderDots();
     updateNav();
     
-    console.log('✅ Init complete');
+    console.log('✅ Ready');
     
   } catch (error) {
-    console.error('❌ Init error:', error);
+    console.error('❌ Error:', error);
     document.getElementById('slidesContainer').innerHTML = `
-      <div style="text-align: center; padding: 2rem; color: #D4AF37;">
+      <div style="text-align: center; padding: 2rem; color: #D4AF37; max-width: 600px;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        <div style="font-size: 1.5rem; font-weight: 700;">Failed to load</div>
-        <div style="font-size: 1rem; margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
-          ${error.message}
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Failed to load</div>
+        <div style="font-size: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+          <strong>Error:</strong> ${error.message}
         </div>
-        <div style="font-size: 0.875rem; margin-top: 1rem; opacity: 0.6;">
-          Check browser console (F12) for details
+        <div style="font-size: 0.875rem; opacity: 0.6;">
+          Make sure data/ folder contains:<br>
+          • complete-essay-phrase-bank1.json<br>
+          • complete-essay-phrase-bank.json
         </div>
       </div>
     `;
   }
 }
 
-// ==================== RENDER PRIMARY TABS ====================
 function renderPrimaryTabs() {
   const container = document.getElementById('primaryTabs');
-  
-  if (!skeletonData) {
-    console.error('❌ Cannot render tabs: skeletonData is null');
-    return;
-  }
+  if (!skeletonData) return;
   
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
-  console.log('📋 Available types:', types);
   
   container.innerHTML = types.map(typeKey => {
     const typeData = skeletonData[typeKey];
@@ -929,9 +897,7 @@ function renderPrimaryTabs() {
   }).join('');
 }
 
-// ==================== SWITCH TYPE ====================
 function switchType(type) {
-  console.log('🔄 Switching to type:', type);
   currentType = type;
   currentVariation = 0;
   renderPrimaryTabs();
@@ -940,66 +906,32 @@ function switchType(type) {
   updateNav();
 }
 
-// ==================== RENDER CONTENT ====================
 function renderContent() {
-  console.log('🎨 renderContent called');
-  console.log('   currentType:', currentType);
-  console.log('   currentVariation:', currentVariation);
-  console.log('   viewMode:', viewMode);
-  
   const container = document.getElementById('slidesContainer');
   container.innerHTML = '';
   
-  if (!skeletonData) {
-    console.error('❌ skeletonData is null');
-    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeleton data not loaded</div>';
-    return;
-  }
-  
-  console.log('✅ skeletonData exists');
-  console.log('📊 skeletonData keys:', Object.keys(skeletonData));
-  
-  if (!skeletonData[currentType]) {
-    console.error('❌ Current type not found:', currentType);
-    console.log('   Available types:', Object.keys(skeletonData).filter(k => k !== 'meta'));
-    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Essay type "${currentType}" not found</div>`;
+  if (!skeletonData || !skeletonData[currentType]) {
+    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Data not loaded</div>';
     return;
   }
   
   const typeData = skeletonData[currentType];
-  console.log('✅ typeData found:', typeData);
-  console.log('📊 typeData.skeletons:', typeData.skeletons);
-  console.log('📊 typeData.skeletons type:', typeof typeData.skeletons);
-  console.log('📊 typeData.skeletons is array?:', Array.isArray(typeData.skeletons));
   
-  if (!typeData.skeletons) {
-    console.error('❌ typeData.skeletons is null/undefined');
-    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">No skeletons array found</div>`;
-    return;
-  }
-  
-  console.log('📊 typeData.skeletons.length:', typeData.skeletons.length);
-  
-  if (!Array.isArray(typeData.skeletons) || typeData.skeletons.length === 0) {
-    console.error('❌ Skeletons array is empty or not an array');
-    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeletons array is empty</div>`;
+  if (!typeData.skeletons || !Array.isArray(typeData.skeletons) || typeData.skeletons.length === 0) {
+    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">No skeletons found</div>';
+    console.error('Skeletons issue:', typeData);
     return;
   }
   
   if (!typeData.skeletons[currentVariation]) {
-    console.error('❌ Variation not found at index:', currentVariation);
-    console.log('   Available variations:', typeData.skeletons.length);
-    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Variation ${currentVariation} not found (have ${typeData.skeletons.length} variations)</div>`;
+    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Variation not found</div>';
     return;
   }
   
   const variation = typeData.skeletons[currentVariation];
-  console.log('✅ Variation found:', variation);
-  
   const slide = document.createElement('div');
   slide.className = 'slide active';
   
-  // Build header with toggle
   const headerHTML = `
     <div class="card-header">
       <div class="essay-type-title">${typeData.label}${viewMode === 'skeleton' ? ` — ${variation.name}` : ''}</div>
@@ -1014,7 +946,6 @@ function renderContent() {
     </div>
   `;
   
-  // Build mobile header
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
   const dropdownHTML = types.map(typeKey => {
     const td = skeletonData[typeKey];
@@ -1051,41 +982,24 @@ function renderContent() {
   
   let contentHTML = '';
   
-  try {
-    if (viewMode === 'skeleton') {
-      console.log('🖼️ Rendering skeleton...');
-      contentHTML = renderSkeleton(variation);
-    } else {
-      console.log('🖼️ Rendering phrases...');
-      contentHTML = renderPhrases(currentType);
-    }
-  } catch (error) {
-    console.error('❌ Error rendering content:', error);
-    contentHTML = `<div style="color: red; padding: 2rem;">Error: ${error.message}</div>`;
+  if (viewMode === 'skeleton') {
+    contentHTML = renderSkeleton(variation);
+  } else {
+    contentHTML = renderPhrases(currentType);
   }
   
   slide.innerHTML = mobileHeaderHTML + headerHTML + contentHTML;
   container.appendChild(slide);
-  console.log('✅ Content rendered successfully');
 }
 
-// ==================== RENDER SKELETON ====================
 function renderSkeleton(variation) {
-  console.log('🖼️ renderSkeleton called with:', variation);
-  
-  if (!variation) {
-    console.error('❌ variation is null/undefined');
-    return '<div style="padding: 2rem; color: red;">No variation provided</div>';
-  }
-  
-  if (!variation.skeleton) {
-    console.error('❌ variation.skeleton is null/undefined');
-    return '<div style="padding: 2rem; color: red;">No skeleton property in variation</div>';
+  if (!variation || !variation.skeleton) {
+    return '<div style="padding: 2rem; color: red;">Invalid skeleton data</div>';
   }
   
   let html = '<div class="skeleton-display">';
   
-  variation.skeleton.forEach((para, index) => {
+  variation.skeleton.forEach((para) => {
     html += '<div class="paragraph-block">';
     html += `<div class="paragraph-title">${para.emoji || '📝'} ${para.title || 'Untitled'}</div>`;
     
@@ -1104,14 +1018,12 @@ function renderSkeleton(variation) {
   return html;
 }
 
-// ==================== RENDER PHRASES ====================
 function renderPhrases(essayType) {
   if (!phraseData || !phraseData[essayType] || !phraseData[essayType].categories) {
-    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available for this essay type.</div>';
+    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available</div>';
   }
   
   const categories = phraseData[essayType].categories;
-  
   let html = '<div class="phrases-display">';
   
   categories.forEach(category => {
@@ -1141,7 +1053,6 @@ function renderPhrases(essayType) {
   return html;
 }
 
-// ==================== SET VIEW MODE ====================
 function setViewMode(mode) {
   viewMode = mode;
   document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -1152,7 +1063,6 @@ function setViewMode(mode) {
   updateNav();
 }
 
-// ==================== RENDER DOTS ====================
 function renderDots() {
   const container = document.getElementById('progressDots');
   container.innerHTML = '';
@@ -1170,7 +1080,6 @@ function renderDots() {
   }
 }
 
-// ==================== SWITCH VARIATION ====================
 function switchVariation(index) {
   currentVariation = index;
   renderContent();
@@ -1178,7 +1087,6 @@ function switchVariation(index) {
   updateNav();
 }
 
-// ==================== NAVIGATE ====================
 function navigate(direction) {
   if (viewMode === 'skeleton') {
     if (!skeletonData || !skeletonData[currentType]) return;
@@ -1199,7 +1107,6 @@ function navigate(direction) {
   updateNav();
 }
 
-// ==================== UPDATE NAV ====================
 function updateNav() {
   const arrows = document.querySelectorAll('.nav-arrow');
   
@@ -1221,7 +1128,6 @@ function updateNav() {
   }
 }
 
-// ==================== CATEGORY DROPDOWN ====================
 function toggleCategoryDropdown(event) {
   if (event) event.stopPropagation();
   const dropdown = document.getElementById('categoryDropdown');
@@ -1242,7 +1148,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// ==================== KEYBOARD NAV ====================
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') navigate(-1);
   if (e.key === 'ArrowRight') navigate(1);
@@ -1252,7 +1157,6 @@ document.body.addEventListener('touchmove', function(e) {
   if (e.target === document.body) e.preventDefault();
 }, { passive: false });
 
-// ==================== START ====================
 init();
 </script>
 </body>
