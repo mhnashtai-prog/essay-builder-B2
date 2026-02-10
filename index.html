@@ -920,10 +920,16 @@ async function init() {
     `;
   }
 }
-  
+
 // ==================== RENDER PRIMARY TABS ====================
 function renderPrimaryTabs() {
   const container = document.getElementById('primaryTabs');
+  
+  if (!skeletonData) {
+    console.error('Cannot render tabs: skeletonData is null');
+    return;
+  }
+  
   const types = Object.keys(skeletonData).filter(key => key !== 'meta');
   
   container.innerHTML = types.map(typeKey => {
@@ -952,11 +958,33 @@ function renderContent() {
   const container = document.getElementById('slidesContainer');
   container.innerHTML = '';
   
-  const slide = document.createElement('div');
-  slide.className = 'slide active';
+  // Safety checks
+  if (!skeletonData) {
+    container.innerHTML = '<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeleton data not loaded</div>';
+    console.error('renderContent called but skeletonData is null');
+    return;
+  }
+  
+  if (!skeletonData[currentType]) {
+    console.error('Current type not found:', currentType);
+    console.log('Available types:', Object.keys(skeletonData));
+    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Essay type "${currentType}" not found</div>`;
+    return;
+  }
   
   const typeData = skeletonData[currentType];
+  
+  if (!typeData.skeletons || !typeData.skeletons[currentVariation]) {
+    console.error('Skeleton variation not found:', currentVariation);
+    console.log('Available variations:', typeData.skeletons?.length || 0);
+    container.innerHTML = `<div style="color: #D4AF37; padding: 2rem; text-align: center;">Skeleton variation not found</div>`;
+    return;
+  }
+  
   const variation = typeData.skeletons[currentVariation];
+  
+  const slide = document.createElement('div');
+  slide.className = 'slide active';
   
   // Build header with toggle
   const headerHTML = `
@@ -1010,10 +1038,15 @@ function renderContent() {
   
   let contentHTML = '';
   
-  if (viewMode === 'skeleton') {
-    contentHTML = renderSkeleton(variation);
-  } else {
-    contentHTML = renderPhrases(currentType);
+  try {
+    if (viewMode === 'skeleton') {
+      contentHTML = renderSkeleton(variation);
+    } else {
+      contentHTML = renderPhrases(currentType);
+    }
+  } catch (error) {
+    console.error('Error rendering content:', error);
+    contentHTML = `<div style="color: red; padding: 2rem;">Error: ${error.message}</div>`;
   }
   
   slide.innerHTML = mobileHeaderHTML + headerHTML + contentHTML;
@@ -1022,17 +1055,24 @@ function renderContent() {
 
 // ==================== RENDER SKELETON (COMPACT) ====================
 function renderSkeleton(variation) {
+  if (!variation || !variation.skeleton) {
+    console.error('Invalid variation passed to renderSkeleton:', variation);
+    return '<div style="padding: 2rem; color: red;">Invalid skeleton data</div>';
+  }
+  
   let html = '<div class="skeleton-display">';
   
   variation.skeleton.forEach((para, index) => {
     html += '<div class="paragraph-block">';
-    html += `<div class="paragraph-title">${para.emoji} ${para.title}</div>`;
+    html += `<div class="paragraph-title">${para.emoji || '📝'} ${para.title || 'Untitled'}</div>`;
     
-    para.lines.forEach(line => {
-      if (line !== "") {
-        html += `<div class="paragraph-text">${line}</div>`;
-      }
-    });
+    if (para.lines && Array.isArray(para.lines)) {
+      para.lines.forEach(line => {
+        if (line !== "") {
+          html += `<div class="paragraph-text">${line}</div>`;
+        }
+      });
+    }
     
     html += '</div>';
   });
@@ -1044,8 +1084,20 @@ function renderSkeleton(variation) {
 // ==================== RENDER PHRASES ====================
 function renderPhrases(essayType) {
   // Check if we have phrase data for this type
-  if (!phraseData[essayType] || !phraseData[essayType].categories) {
+  if (!phraseData) {
+    console.error('phraseData is null');
+    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">Phrase data not loaded.</div>';
+  }
+  
+  if (!phraseData[essayType]) {
+    console.log('No phrase data for:', essayType);
+    console.log('Available phrase types:', Object.keys(phraseData).filter(k => k !== 'meta'));
     return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No phrase bank available for this essay type.</div>';
+  }
+  
+  if (!phraseData[essayType].categories) {
+    console.error('No categories found for:', essayType);
+    return '<div class="phrases-display" style="padding: 2rem; text-align: center; color: rgba(0,0,0,0.4);">No categories found for this essay type.</div>';
   }
   
   const categories = phraseData[essayType].categories;
@@ -1054,19 +1106,23 @@ function renderPhrases(essayType) {
   
   categories.forEach(category => {
     html += '<div class="phrase-category">';
-    html += `<div class="category-title">${category.title}</div>`;
+    html += `<div class="category-title">${category.title || 'Untitled Category'}</div>`;
     
-    category.subcategories.forEach(sub => {
-      html += '<div class="subcategory">';
-      html += `<div class="subcategory-title">${sub.subtitle}</div>`;
-      html += '<ul class="phrase-list">';
-      
-      sub.phrases.forEach(phrase => {
-        html += `<li class="phrase-item">${phrase}</li>`;
+    if (category.subcategories && Array.isArray(category.subcategories)) {
+      category.subcategories.forEach(sub => {
+        html += '<div class="subcategory">';
+        html += `<div class="subcategory-title">${sub.subtitle || 'Untitled Subcategory'}</div>`;
+        html += '<ul class="phrase-list">';
+        
+        if (sub.phrases && Array.isArray(sub.phrases)) {
+          sub.phrases.forEach(phrase => {
+            html += `<li class="phrase-item">${phrase}</li>`;
+          });
+        }
+        
+        html += '</ul></div>';
       });
-      
-      html += '</ul></div>';
-    });
+    }
     
     html += '</div>';
   });
@@ -1094,14 +1150,16 @@ function renderDots() {
   const container = document.getElementById('progressDots');
   container.innerHTML = '';
   
-  if (viewMode === 'skeleton') {
+  if (viewMode === 'skeleton' && skeletonData && skeletonData[currentType]) {
     const typeData = skeletonData[currentType];
-    typeData.skeletons.forEach((skeleton, index) => {
-      const dot = document.createElement('div');
-      dot.className = `progress-dot ${index === currentVariation ? 'active' : ''}`;
-      dot.onclick = () => switchVariation(index);
-      container.appendChild(dot);
-    });
+    if (typeData.skeletons && Array.isArray(typeData.skeletons)) {
+      typeData.skeletons.forEach((skeleton, index) => {
+        const dot = document.createElement('div');
+        dot.className = `progress-dot ${index === currentVariation ? 'active' : ''}`;
+        dot.onclick = () => switchVariation(index);
+        container.appendChild(dot);
+      });
+    }
   }
 }
 
@@ -1116,6 +1174,8 @@ function switchVariation(index) {
 // ==================== NAVIGATE ====================
 function navigate(direction) {
   if (viewMode === 'skeleton') {
+    if (!skeletonData || !skeletonData[currentType]) return;
+    
     const typeData = skeletonData[currentType];
     currentVariation += direction;
     currentVariation = Math.max(0, Math.min(currentVariation, typeData.skeletons.length - 1));
@@ -1138,6 +1198,12 @@ function navigate(direction) {
 // ==================== UPDATE NAV ====================
 function updateNav() {
   const arrows = document.querySelectorAll('.nav-arrow');
+  
+  if (!skeletonData || !skeletonData[currentType]) {
+    arrows[0].disabled = true;
+    arrows[1].disabled = true;
+    return;
+  }
   
   if (viewMode === 'skeleton') {
     const typeData = skeletonData[currentType];
@@ -1204,6 +1270,5 @@ document.body.addEventListener('touchmove', function(e) {
 // ==================== INIT ====================
 init();
 </script>
-
 </body>
 </html>
