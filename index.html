@@ -854,41 +854,73 @@ let viewMode = 'skeleton';
 // ==================== INIT ====================
 async function init() {
   try {
-    // Load both JSON files
-    const [skeletonResponse, phraseResponse] = await Promise.all([
-      fetch('data/complete-essay-phrase-bank1.json'),
-      fetch('data/complete-essay-phrase-bank.json')
-    ]);
+    console.log('🚀 Starting init...');
+    console.log('📍 Current URL:', window.location.href);
     
-    if (!skeletonResponse.ok || !phraseResponse.ok) {
-      throw new Error('Failed to load data files');
+    // Try loading skeleton data
+    console.log('📥 Fetching skeleton data...');
+    const skeletonResponse = await fetch('data/complete-essay-phrase-bank1.json');
+    console.log('📊 Skeleton response:', skeletonResponse.status, skeletonResponse.statusText);
+    
+    if (!skeletonResponse.ok) {
+      throw new Error(`Skeleton fetch failed: ${skeletonResponse.status} - ${skeletonResponse.statusText}`);
     }
     
-    skeletonData = await skeletonResponse.json();
-    phraseData = await phraseResponse.json();
+    const skeletonText = await skeletonResponse.text();
+    console.log('📄 Skeleton data length:', skeletonText.length);
+    console.log('📄 First 100 chars:', skeletonText.substring(0, 100));
     
+    skeletonData = JSON.parse(skeletonText);
+    console.log('✅ Skeleton data parsed successfully');
+    console.log('📁 Skeleton keys:', Object.keys(skeletonData));
+    
+    // Try loading phrase data
+    console.log('📥 Fetching phrase data...');
+    const phraseResponse = await fetch('data/complete-essay-phrase-bank.json');
+    console.log('📊 Phrase response:', phraseResponse.status, phraseResponse.statusText);
+    
+    if (!phraseResponse.ok) {
+      throw new Error(`Phrase fetch failed: ${phraseResponse.status} - ${phraseResponse.statusText}`);
+    }
+    
+    const phraseText = await phraseResponse.text();
+    console.log('📄 Phrase data length:', phraseText.length);
+    
+    phraseData = JSON.parse(phraseText);
+    console.log('✅ Phrase data parsed successfully');
+    console.log('📁 Phrase keys:', Object.keys(phraseData));
+    
+    // Render
+    console.log('🎨 Rendering content...');
     renderPrimaryTabs();
     renderContent();
     renderDots();
     updateNav();
     
+    console.log('✅ Initialization complete!');
+    
   } catch (error) {
-    console.error('Error loading data:', error);
+    console.error('❌ ERROR:', error);
+    console.error('📍 Error name:', error.name);
+    console.error('📍 Error message:', error.message);
+    console.error('📍 Error stack:', error.stack);
+    
     document.getElementById('slidesContainer').innerHTML = `
-      <div style="text-align: center; padding: 2rem; color: #D4AF37;">
+      <div style="text-align: center; padding: 2rem; color: #D4AF37; max-width: 600px; margin: 0 auto;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
-        <div style="font-size: 1.5rem; font-weight: 700;">Failed to load essay data</div>
-        <div style="font-size: 1rem; margin-top: 1rem; opacity: 0.6;">${error.message}</div>
-        <div style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.4;">
-          Looking for:<br>
-          data/complete-essay-phrase-bank1.json (skeletons)<br>
-          data/complete-essay-phrase-bank.json (phrases)
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Failed to load essay data</div>
+        <div style="font-size: 1rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: left; word-break: break-word;">
+          <strong>Error:</strong><br>
+          ${error.message}
+        </div>
+        <div style="font-size: 0.875rem; margin-top: 1rem; opacity: 0.6;">
+          <strong>Check your browser console (F12) for detailed logs</strong>
         </div>
       </div>
     `;
   }
 }
-
+  
 // ==================== RENDER PRIMARY TABS ====================
 function renderPrimaryTabs() {
   const container = document.getElementById('primaryTabs');
