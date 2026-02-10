@@ -166,13 +166,13 @@
       background: #ffffff;
       border: 4px solid #000000;
       border-radius: 24px;
-      padding: 4rem 3rem;
+      padding: 2.5rem 2.5rem;
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       display: none;
       flex-direction: column;
-      gap: 2rem;
+      gap: 1.5rem;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
@@ -205,14 +205,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1.5rem;
+      padding-bottom: 1rem;
       border-bottom: 2px solid rgba(0, 0, 0, 0.08);
       flex-shrink: 0;
     }
 
     .essay-type-title {
       font-family: 'Inter', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       color: rgba(0, 0, 0, 0.4);
       text-transform: uppercase;
@@ -253,11 +253,11 @@
       color: #D4AF37;
     }
 
-    /* SKELETON DISPLAY */
+    /* SKELETON DISPLAY - COMPACT VERSION */
     .skeleton-display {
       font-family: 'Inter', sans-serif;
-      font-size: 1.75rem;
-      line-height: 1.4;
+      font-size: 1.1rem;
+      line-height: 1.3;
       color: #000000;
       text-align: left;
       font-weight: 900;
@@ -268,7 +268,7 @@
     }
 
     .skeleton-display .paragraph-block {
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       animation: fadeSlideIn 0.5s ease-out;
     }
 
@@ -288,13 +288,13 @@
     }
 
     .skeleton-display .paragraph-title {
-      font-size: 1rem;
+      font-size: 0.65rem;
       color: rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.4rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.35rem;
     }
 
     /* Color-coded paragraph titles */
@@ -313,20 +313,14 @@
     }
 
     .skeleton-display .paragraph-text {
-      font-size: 1.75rem;
+      font-size: 1.1rem;
       color: #000000;
-      line-height: 1.4;
-      margin-bottom: 0.875rem;
+      line-height: 1.3;
+      margin-bottom: 0.4rem;
     }
 
     .skeleton-display .paragraph-text:last-child {
       margin-bottom: 0;
-    }
-
-    .skeleton-display .divider {
-      height: 1px;
-      background: rgba(0, 0, 0, 0.1);
-      margin: 1.5rem 0;
     }
 
     /* PHRASES DISPLAY */
@@ -707,31 +701,28 @@
         flex: 1;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 1.5rem;
+        padding: 1.25rem;
       }
 
-      /* Skeleton - 30% font reduction */
+      /* Skeleton - compact mobile */
       .skeleton-display {
-        font-size: 1.225rem;
-        line-height: 1.3;
+        font-size: 0.8rem;
+        line-height: 1.25;
       }
 
       .skeleton-display .paragraph-title {
-        font-size: 0.7rem;
-        margin-bottom: 0.5rem;
+        font-size: 0.5rem;
+        margin-bottom: 0.3rem;
+        gap: 0.25rem;
       }
 
       .skeleton-display .paragraph-text {
-        font-size: 1.225rem;
-        margin-bottom: 0.6rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
       }
 
       .skeleton-display .paragraph-block {
-        margin-bottom: 1.25rem;
-      }
-
-      .skeleton-display .divider {
-        margin: 1rem 0;
+        margin-bottom: 0.75rem;
       }
 
       /* Phrases display mobile */
@@ -787,17 +778,17 @@
     /* Extra small phones */
     @media (max-width: 375px) {
       .skeleton-display {
-        font-size: 1.05rem;
-        padding: 1.25rem;
-        line-height: 1.25;
+        font-size: 0.7rem;
+        padding: 1rem;
+        line-height: 1.2;
       }
 
       .skeleton-display .paragraph-text {
-        font-size: 1.05rem;
+        font-size: 0.7rem;
       }
 
       .skeleton-display .paragraph-title {
-        font-size: 0.65rem;
+        font-size: 0.45rem;
       }
 
       .phrase-item {
@@ -865,8 +856,8 @@ async function init() {
   try {
     // Load both JSON files
     const [skeletonResponse, phraseResponse] = await Promise.all([
-      fetch('data/complete-essay-phrase-bank.json'),
-      fetch('data/complete-essay-phrase-bank1.json')
+      fetch('data/complete-essay-phrase-bank1.json'),
+      fetch('data/complete-essay-phrase-bank.json')
     ]);
     
     if (!skeletonResponse.ok || !phraseResponse.ok) {
@@ -890,8 +881,8 @@ async function init() {
         <div style="font-size: 1rem; margin-top: 1rem; opacity: 0.6;">${error.message}</div>
         <div style="font-size: 0.875rem; margin-top: 0.5rem; opacity: 0.4;">
           Looking for:<br>
-          data/complete-essay-phrase-bank.json<br>
-          data/complete-essay-phrase-bank1.json
+          data/complete-essay-phrase-bank1.json (skeletons)<br>
+          data/complete-essay-phrase-bank.json (phrases)
         </div>
       </div>
     `;
@@ -997,7 +988,7 @@ function renderContent() {
   container.appendChild(slide);
 }
 
-// ==================== RENDER SKELETON ====================
+// ==================== RENDER SKELETON (COMPACT) ====================
 function renderSkeleton(variation) {
   let html = '<div class="skeleton-display">';
   
@@ -1006,18 +997,12 @@ function renderSkeleton(variation) {
     html += `<div class="paragraph-title">${para.emoji} ${para.title}</div>`;
     
     para.lines.forEach(line => {
-      if (line === "") {
-        html += '<div class="paragraph-text">&nbsp;</div>';
-      } else {
+      if (line !== "") {
         html += `<div class="paragraph-text">${line}</div>`;
       }
     });
     
-    if (index < variation.skeleton.length - 1) {
-      html += '</div><div class="divider"></div>';
-    } else {
-      html += '</div>';
-    }
+    html += '</div>';
   });
   
   html += '</div>';
