@@ -241,7 +241,7 @@
       color: rgba(0, 0, 0, 0.9);
       text-align: left;
       font-weight: 600;
-      text-transform: uppercase;
+      text-transform: none;
       letter-spacing: 0.1em;
       white-space: pre-line;
       word-wrap: break-word;
@@ -272,6 +272,19 @@
       align-items: center;
       gap: 0.3rem;
       font-size: 0.75rem;
+    }
+
+    /* Color coding for different sections */
+    .skeleton-display .paragraph-title.intro {
+      color: #90EE90;
+    }
+
+    .skeleton-display .paragraph-title.body {
+      color: #e3a268;
+    }
+
+    .skeleton-display .paragraph-title.conclusion {
+      color: #4A90E2;
     }
 
     .skeleton-display .paragraph-text {
@@ -320,6 +333,22 @@
       letter-spacing: 0.08em;
       padding-bottom: 0.3rem;
       border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    }
+
+    /* Color coding for phrase categories */
+    .category-title.intro {
+      color: #90EE90;
+      border-bottom-color: #90EE90;
+    }
+
+    .category-title.body {
+      color: #e3a268;
+      border-bottom-color: #e3a268;
+    }
+
+    .category-title.conclusion {
+      color: #4A90E2;
+      border-bottom-color: #4A90E2;
     }
 
     .subcategory {
@@ -958,7 +987,22 @@ function renderSkeleton(variation) {
   
   variation.skeleton.forEach((para, index) => {
     html += '<div class="paragraph-block">';
-    html += `<div class="paragraph-title">${para.emoji} ${para.title}</div>`;
+    
+    // Determine color class based on title content
+    let colorClass = '';
+    const titleLower = para.title.toLowerCase();
+    if (titleLower.includes('intro') || titleLower.includes('opening') || titleLower.includes('hook')) {
+      colorClass = 'intro';
+    } else if (titleLower.includes('conclu') || titleLower.includes('closing') || titleLower.includes('final')) {
+      colorClass = 'conclusion';
+    } else if (titleLower.includes('body') || titleLower.includes('paragraph') || titleLower.includes('argument') || 
+               titleLower.includes('point') || titleLower.includes('advantage') || titleLower.includes('disadvantage') ||
+               titleLower.includes('for') || titleLower.includes('against') || titleLower.includes('cause') || 
+               titleLower.includes('effect') || titleLower.includes('opinion') || titleLower.includes('counter')) {
+      colorClass = 'body';
+    }
+    
+    html += `<div class="paragraph-title ${colorClass}">${para.emoji} ${para.title}</div>`;
     
     para.lines.forEach(line => {
       if (line === "") {
@@ -992,7 +1036,21 @@ function renderPhrases(essayType) {
   
   categories.forEach(category => {
     html += '<div class="phrase-category">';
-    html += `<div class="category-title">${category.title}</div>`;
+    
+    // Determine color class based on category title
+    let colorClass = '';
+    const titleLower = category.title.toLowerCase();
+    if (titleLower.includes('intro') || titleLower.includes('opening') || titleLower.includes('hook')) {
+      colorClass = 'intro';
+    } else if (titleLower.includes('conclu') || titleLower.includes('closing') || titleLower.includes('final')) {
+      colorClass = 'conclusion';
+    } else if (titleLower.includes('body') || titleLower.includes('paragraph') || titleLower.includes('argument') || 
+               titleLower.includes('point') || titleLower.includes('transition') || titleLower.includes('example') ||
+               titleLower.includes('evidence') || titleLower.includes('support') || titleLower.includes('analysis')) {
+      colorClass = 'body';
+    }
+    
+    html += `<div class="category-title ${colorClass}">${category.title}</div>`;
     
     category.subcategories.forEach(sub => {
       html += '<div class="subcategory">';
