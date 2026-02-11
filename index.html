@@ -238,7 +238,7 @@
       /* SKELETON DISPLAY - AUTO-SCALING CONTAINER */
       .skeleton-display {
       font-family: 'Inter', sans-serif;
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(0, 0, 0, 0.9);
       text-align: left;
       font-weight: 600;
       text-transform: uppercase;
@@ -248,9 +248,11 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
+      justify-content: flex-start;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding: 0.5rem 0;
+      font-size: 0.75rem;
     }
 
     .skeleton-display .paragraph-block {
@@ -269,12 +271,14 @@
       display: flex;
       align-items: center;
       gap: 0.3rem;
+      font-size: 0.75rem;
     }
 
     .skeleton-display .paragraph-text {
-      color: rgba(0, 0, 0, 0.8);
-      line-height: 1.2;
+      color: rgba(0, 0, 0, 0.9);
+      line-height: 1.4;
       margin-bottom: 0.2rem;
+      font-size: 0.75rem;
     }
 
     .skeleton-display .paragraph-text:last-child {
@@ -945,18 +949,6 @@ function renderContent() {
   
   slide.innerHTML = mobileHeaderHTML + headerHTML + contentHTML;
   container.appendChild(slide);
-  
-  // AUTO-SCALE: Call after DOM is ready
-  if (viewMode === 'skeleton') {
-    requestAnimationFrame(() => {
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        autoScaleSkeletonToFitMobile(0);
-      } else {
-        autoScaleSkeletonToFit(0);
-      }
-    });
-  }
 }
 
 // ==================== RENDER SKELETON ====================
@@ -1296,14 +1288,7 @@ let resizeTimeout;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
-    if (viewMode === 'skeleton') {
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        autoScaleSkeletonToFitMobile(0);
-      } else {
-        autoScaleSkeletonToFit(0);
-      }
-    }
+    // No need to auto-scale anymore - using fixed font size
   }, 250);
 });
 
