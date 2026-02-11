@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
-    * {
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -164,31 +164,15 @@
       background: #ffffff;
       border: 4px solid #000000;
       border-radius: 24px;
-      padding: 2.5rem 3rem;
+      padding: 2rem 3rem;
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
       display: none;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-    }
-
-    .slide::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .slide::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .slide::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 3px;
+      overflow: hidden;
     }
 
     .slide.active {
@@ -203,7 +187,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1rem;
+      padding-bottom: 0.75rem;
       border-bottom: 2px solid rgba(0, 0, 0, 0.08);
       flex-shrink: 0;
     }
@@ -251,11 +235,9 @@
       color: #D4AF37;
     }
 
-    /* SKELETON DISPLAY */
+    /* SKELETON DISPLAY - AUTO-SCALING CONTAINER */
     .skeleton-display {
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      line-height: 1.4;
       color: #000000;
       text-align: left;
       font-weight: 900;
@@ -263,10 +245,16 @@
       letter-spacing: 0.01em;
       white-space: pre-line;
       word-wrap: break-word;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      padding: 1rem 0;
     }
 
     .skeleton-display .paragraph-block {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       animation: fadeSlideIn 0.5s ease-out;
     }
 
@@ -286,9 +274,8 @@
     }
 
     .skeleton-display .paragraph-title {
-      font-size: 0.5rem;
       color: rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -311,10 +298,9 @@
     }
 
     .skeleton-display .paragraph-text {
-      font-size: 0.875rem;
       color: #000000;
-      line-height: 1.4;
-      margin-bottom: 0.875rem;
+      line-height: 1.3;
+      margin-bottom: 0.4rem;
     }
 
     .skeleton-display .paragraph-text:last-child {
@@ -324,13 +310,17 @@
     .skeleton-display .divider {
       height: 1px;
       background: rgba(0, 0, 0, 0.1);
-      margin: 1.5rem 0;
+      margin: 1rem 0;
     }
 
     /* PHRASES DISPLAY */
     .phrases-display {
       font-family: 'Inter', sans-serif;
       color: #000000;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 0;
     }
 
     .phrase-category {
@@ -528,6 +518,7 @@
         display: flex !important;
       }
 
+      /* iOS-STYLE MOBILE HEADER */
       .slide-header {
         display: flex !important;
         flex-direction: row;
@@ -691,32 +682,29 @@
       .skeleton-display,
       .phrases-display {
         flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
         padding: 1.5rem;
-      }
-
-      .skeleton-display {
-        font-size: 0.6125rem;
-        line-height: 1.3;
-      }
-
-      .skeleton-display .paragraph-title {
-        font-size: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .skeleton-display .paragraph-text {
-        font-size: 0.6125rem;
-        margin-bottom: 0.6rem;
+        overflow: hidden;
       }
 
       .skeleton-display .paragraph-block {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .skeleton-display .paragraph-title {
+        margin-bottom: 0.4rem;
+      }
+
+      .skeleton-display .paragraph-text {
+        margin-bottom: 0.3rem;
       }
 
       .skeleton-display .divider {
-        margin: 1rem 0;
+        margin: 0.75rem 0;
+      }
+
+      .phrases-display {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .phrase-category {
@@ -769,18 +757,9 @@
 
     /* Extra small phones */
     @media (max-width: 375px) {
-      .skeleton-display {
-        font-size: 0.525rem;
+      .skeleton-display,
+      .phrases-display {
         padding: 1.25rem;
-        line-height: 1.25;
-      }
-
-      .skeleton-display .paragraph-text {
-        font-size: 0.525rem;
-      }
-
-      .skeleton-display .paragraph-title {
-        font-size: 0.5rem;
       }
 
       .phrase-item {
@@ -915,6 +894,7 @@ function renderContent() {
   
   const slide = document.createElement('div');
   slide.className = 'slide active';
+  slide.dataset.index = '0';
   
   const typeData = skeletonData[currentType];
   const variation = typeData.skeletons[currentVariation];
@@ -979,6 +959,18 @@ function renderContent() {
   
   slide.innerHTML = mobileHeaderHTML + headerHTML + contentHTML;
   container.appendChild(slide);
+  
+  // AUTO-SCALE: Call after DOM is ready
+  if (viewMode === 'skeleton') {
+    requestAnimationFrame(() => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        autoScaleSkeletonToFitMobile(0);
+      } else {
+        autoScaleSkeletonToFit(0);
+      }
+    });
+  }
 }
 
 // ==================== RENDER SKELETON ====================
@@ -1040,6 +1032,158 @@ function renderPhrases(essayType) {
   
   html += '</div>';
   return html;
+}
+
+// ==================== AUTO-SCALE FUNCTION (DESKTOP) ====================
+function autoScaleSkeletonToFit(slideIndex) {
+  const slide = document.querySelector(`.slide[data-index="${slideIndex}"]`);
+  if (!slide) return;
+  
+  const skeletonDisplay = slide.querySelector('.skeleton-display');
+  if (!skeletonDisplay) return;
+  
+  // Get available height for content
+  const slideHeight = slide.clientHeight;
+  const cardHeader = slide.querySelector('.card-header');
+  const headerHeight = cardHeader ? cardHeader.offsetHeight : 0;
+  
+  // Calculate available space (accounting for padding and gaps)
+  const slideComputedStyle = window.getComputedStyle(slide);
+  const paddingTop = parseFloat(slideComputedStyle.paddingTop);
+  const paddingBottom = parseFloat(slideComputedStyle.paddingBottom);
+  const gap = parseFloat(slideComputedStyle.gap);
+  
+  const availableHeight = slideHeight - headerHeight - paddingTop - paddingBottom - gap - 40; // 40px buffer
+  
+  // Start with base font size
+  let fontSize = 0.875; // rem - desktop base
+  
+  // Binary search for optimal font size
+  let minFont = 0.3;
+  let maxFont = fontSize;
+  let iterations = 0;
+  const maxIterations = 15;
+  
+  while (iterations < maxIterations && (maxFont - minFont) > 0.01) {
+    fontSize = (minFont + maxFont) / 2;
+    
+    // Apply font size
+    skeletonDisplay.style.fontSize = `${fontSize}rem`;
+    
+    // Also scale paragraph titles proportionally
+    const paragraphTitles = skeletonDisplay.querySelectorAll('.paragraph-title');
+    const titleFontSize = fontSize * 0.57; // Proportional to main text
+    paragraphTitles.forEach(title => {
+      title.style.fontSize = `${titleFontSize}rem`;
+    });
+    
+    // Also scale line-height for better fit
+    const lineHeight = 1.3;
+    skeletonDisplay.style.lineHeight = lineHeight;
+    
+    // Force reflow
+    void skeletonDisplay.offsetHeight;
+    
+    // Check if content fits
+    const contentHeight = skeletonDisplay.scrollHeight;
+    
+    if (contentHeight <= availableHeight) {
+      // Content fits, try larger
+      minFont = fontSize;
+    } else {
+      // Content overflows, try smaller
+      maxFont = fontSize;
+    }
+    
+    iterations++;
+  }
+  
+  // Final adjustment - use minFont to ensure it definitely fits
+  fontSize = minFont;
+  skeletonDisplay.style.fontSize = `${fontSize}rem`;
+  
+  const paragraphTitles = skeletonDisplay.querySelectorAll('.paragraph-title');
+  const titleFontSize = fontSize * 0.57;
+  paragraphTitles.forEach(title => {
+    title.style.fontSize = `${titleFontSize}rem`;
+  });
+  
+  // Fine-tune line height based on final font size
+  if (fontSize < 0.5) {
+    skeletonDisplay.style.lineHeight = '1.2';
+  } else if (fontSize < 0.7) {
+    skeletonDisplay.style.lineHeight = '1.25';
+  } else {
+    skeletonDisplay.style.lineHeight = '1.3';
+  }
+  
+  console.log(`Slide ${slideIndex}: Scaled to ${fontSize.toFixed(3)}rem (${iterations} iterations)`);
+}
+
+// ==================== AUTO-SCALE FUNCTION (MOBILE) ====================
+function autoScaleSkeletonToFitMobile(slideIndex) {
+  const slide = document.querySelector(`.slide[data-index="${slideIndex}"]`);
+  if (!slide) return;
+  
+  const skeletonDisplay = slide.querySelector('.skeleton-display');
+  if (!skeletonDisplay) return;
+  
+  // Get available height
+  const slideHeight = slide.clientHeight;
+  const slideHeader = slide.querySelector('.slide-header');
+  const headerHeight = slideHeader ? slideHeader.offsetHeight : 0;
+  
+  // Account for padding
+  const padding = 3; // 1.5rem top + 1.5rem bottom = 3rem
+  const paddingPx = padding * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  
+  const availableHeight = slideHeight - headerHeight - paddingPx - 20; // 20px buffer
+  
+  // Start with mobile base
+  let fontSize = 0.6125;
+  
+  // Binary search
+  let minFont = 0.25;
+  let maxFont = fontSize;
+  let iterations = 0;
+  const maxIterations = 15;
+  
+  while (iterations < maxIterations && (maxFont - minFont) > 0.01) {
+    fontSize = (minFont + maxFont) / 2;
+    
+    skeletonDisplay.style.fontSize = `${fontSize}rem`;
+    
+    const paragraphTitles = skeletonDisplay.querySelectorAll('.paragraph-title');
+    const titleFontSize = fontSize * 0.82;
+    paragraphTitles.forEach(title => {
+      title.style.fontSize = `${titleFontSize}rem`;
+    });
+    
+    skeletonDisplay.style.lineHeight = '1.2';
+    
+    void skeletonDisplay.offsetHeight;
+    
+    const contentHeight = skeletonDisplay.scrollHeight;
+    
+    if (contentHeight <= availableHeight) {
+      minFont = fontSize;
+    } else {
+      maxFont = fontSize;
+    }
+    
+    iterations++;
+  }
+  
+  fontSize = minFont;
+  skeletonDisplay.style.fontSize = `${fontSize}rem`;
+  
+  const paragraphTitles = skeletonDisplay.querySelectorAll('.paragraph-title');
+  const titleFontSize = fontSize * 0.82;
+  paragraphTitles.forEach(title => {
+    title.style.fontSize = `${titleFontSize}rem`;
+  });
+  
+  console.log(`Mobile Slide ${slideIndex}: Scaled to ${fontSize.toFixed(3)}rem`);
 }
 
 // ==================== SET VIEW MODE ====================
@@ -1159,6 +1303,22 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') navigate(-1);
   if (e.key === 'ArrowRight') navigate(1);
+});
+
+// ==================== WINDOW RESIZE HANDLER ====================
+let resizeTimeout;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    if (viewMode === 'skeleton') {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        autoScaleSkeletonToFitMobile(0);
+      } else {
+        autoScaleSkeletonToFit(0);
+      }
+    }
+  }, 250);
 });
 
 // Prevent pull-to-refresh
