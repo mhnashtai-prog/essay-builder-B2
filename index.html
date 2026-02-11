@@ -280,7 +280,7 @@
     }
 
     .skeleton-display .paragraph-title.body {
-      color: #e3a268;
+      color: #f2a057;
     }
 
     .skeleton-display .paragraph-title.conclusion {
@@ -342,8 +342,8 @@
     }
 
     .category-title.body {
-      color: #e3a268;
-      border-bottom-color: #e3a268;
+      color: #f2a057;
+      border-bottom-color: #f2a057;
     }
 
     .category-title.conclusion {
@@ -995,14 +995,12 @@ function renderSkeleton(variation) {
       colorClass = 'intro';
     } else if (titleLower.includes('conclu') || titleLower.includes('closing') || titleLower.includes('final')) {
       colorClass = 'conclusion';
-    } else if (titleLower.includes('body') || titleLower.includes('paragraph') || titleLower.includes('argument') || 
-               titleLower.includes('point') || titleLower.includes('advantage') || titleLower.includes('disadvantage') ||
-               titleLower.includes('for') || titleLower.includes('against') || titleLower.includes('cause') || 
-               titleLower.includes('effect') || titleLower.includes('opinion') || titleLower.includes('counter')) {
+    } else {
+      // Default to body for everything else (paragraphs, arguments, points, etc.)
       colorClass = 'body';
     }
     
-    html += `<div class="paragraph-title ${colorClass}">${para.emoji} ${para.title}</div>`;
+    html += `<div class="paragraph-title ${colorClass}">${para.title}</div>`;
     
     para.lines.forEach(line => {
       if (line === "") {
@@ -1044,9 +1042,8 @@ function renderPhrases(essayType) {
       colorClass = 'intro';
     } else if (titleLower.includes('conclu') || titleLower.includes('closing') || titleLower.includes('final')) {
       colorClass = 'conclusion';
-    } else if (titleLower.includes('body') || titleLower.includes('paragraph') || titleLower.includes('argument') || 
-               titleLower.includes('point') || titleLower.includes('transition') || titleLower.includes('example') ||
-               titleLower.includes('evidence') || titleLower.includes('support') || titleLower.includes('analysis')) {
+    } else {
+      // Default to body for everything else
       colorClass = 'body';
     }
     
