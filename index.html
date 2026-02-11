@@ -238,7 +238,7 @@
       /* SKELETON DISPLAY - AUTO-SCALING CONTAINER */
       .skeleton-display {
       font-family: 'Inter', sans-serif;
-      color: rgba(0, 0, 0, 0.6);
+      color: rgba(0, 0, 0, 0.8);
       text-align: left;
       font-weight: 600;
       text-transform: uppercase;
@@ -272,7 +272,7 @@
     }
 
     .skeleton-display .paragraph-text {
-      color: rgba(0, 0, 0, 0.6);
+      color: rgba(0, 0, 0, 0.8);
       line-height: 1.2;
       margin-bottom: 0.2rem;
     }
@@ -1042,7 +1042,7 @@ function autoScaleSkeletonToFit(slideIndex) {
   const availableHeight = slideHeight - headerHeight - paddingTop - paddingBottom - gap - 40; // 40px buffer
   
   // Start with base font size
-  let fontSize = 0.875; // rem - desktop base
+  let fontSize = 1.2; // rem - desktop base (increased from 0.875)
   
   // Binary search for optimal font size
   let minFont = 0.3;
@@ -1126,7 +1126,7 @@ function autoScaleSkeletonToFitMobile(slideIndex) {
   const availableHeight = slideHeight - headerHeight - paddingPx - 20; // 20px buffer
   
   // Start with mobile base
-  let fontSize = 0.6125;
+  let fontSize = 0.85; // increased from 0.6125
   
   // Binary search
   let minFont = 0.25;
